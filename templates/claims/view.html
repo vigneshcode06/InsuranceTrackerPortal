@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Claim Details - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-clipboard-list text-primary"></i>
+                    Claim Details
+                </h2>
+                <div>
+                    {% if current_user.role in ['admin', 'agent'] and claim.status in ['pending', 'processing'] %}
+                    <a href="{{ url_for('update_claim', id=claim.id) }}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Update Status
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('claim_list') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Claim Information -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> Claim Information
+                    </h5>
+                    <span class="badge bg-{{ 'warning' if claim.status == 'pending' else 'info' if claim.status == 'processing' else 'success' if claim.status == 'approved' else 'danger' }} fs-6">
+                        {{ claim.status.title() }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Claim Number</h6>
+                            <p class="fs-5 fw-bold">{{ claim.claim_number }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Claim Amount</h6>
+                            <p class="fs-4 text-success fw-bold">${{ "%.2f"|format(claim.claim_amount) }}</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Incident Date</h6>
+                            <p class="fs-6">{{ claim.incident_date.strftime('%B %d, %Y') }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Claim Submitted</h6>
+                            <p class="fs-6">{{ claim.claim_date.strftime('%B %d, %Y') }}</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text-muted">Policy Information</h6>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Policy Number:</strong> {{ claim.policy.policy_number }}<br>
+                                            <strong>Type:</strong> {{ claim.policy.policy_type.title() }}<br>
+                                            <strong>Provider:</strong> {{ claim.policy.provider_name }}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Coverage:</strong> ${{ "%.2f"|format(claim.policy.coverage_amount) }}<br>
+                                            <strong>Premium:</strong> ${{ "%.2f"|format(claim.policy.premium_amount) }}<br>
+                                            <a href="{{ url_for('view_policy', id=claim.policy.id) }}" class="btn btn-sm btn-outline-primary mt-2">
+                                                <i class="fas fa-eye"></i> View Policy
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6 class="text-muted">Description</h6>
+                    <p class="mb-3">{{ claim.description }}</p>
+                    
+                    {% if claim.remarks %}
+                    <h6 class="text-muted">Remarks</h6>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> {{ claim.remarks }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if current_user.role in ['admin', 'agent'] %}
+                    <hr>
+                    <h6 class="text-muted">Claimant Information</h6>
+                    <p>{{ claim.claimant.full_name }} ({{ claim.claimant.username }})<br>
+                    <small class="text-muted">{{ claim.claimant.email }}</small></p>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                    <small>
+                        Submitted: {{ claim.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                        {% if claim.updated_at != claim.created_at %}
+                        | Updated: {{ claim.updated_at.strftime('%B %d, %Y at %I:%M %p') }}
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Documents Section -->
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-paperclip"></i> Documents
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if documents %}
+                        {% for document in documents %}
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <div>
+                                <i class="fas fa-file-alt text-muted me-2"></i>
+                                <small>{{ document.split('_', 2)[2] if '_' in document else document }}</small>
+                            </div>
+                            <a href="{{ url_for('uploaded_file', filename=document) }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-paperclip fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No documents uploaded</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Claim Timeline -->
+            <div class="card shadow mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history"></i> Timeline
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-content">
+                                <h6 class="timeline-title">Claim Submitted</h6>
+                                <p class="timeline-time">{{ claim.created_at.strftime('%B %d, %Y') }}</p>
+                            </div>
+                        </div>
+                        
+                        {% if claim.status in ['processing', 'approved', 'rejected'] %}
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-{{ 'info' if claim.status == 'processing' else 'success' if claim.status == 'approved' else 'danger' }}"></div>
+                            <div class="timeline-content">
+                                <h6 class="timeline-title">Status: {{ claim.status.title() }}</h6>
+                                <p class="timeline-time">{{ claim.updated_at.strftime('%B %d, %Y') }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

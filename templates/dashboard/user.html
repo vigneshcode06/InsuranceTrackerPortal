@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-tachometer-alt text-primary"></i>
+                    Welcome, {{ current_user.full_name }}
+                </h2>
+                <div>
+                    <a href="{{ url_for('add_policy') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Policy
+                    </a>
+                    <a href="{{ url_for('add_claim') }}" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Submit Claim
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ stats.total_policies }}</h4>
+                            <p class="card-text">Total Policies</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-file-contract fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ stats.active_policies }}</h4>
+                            <p class="card-text">Active Policies</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ stats.expiring_policies }}</h4>
+                            <p class="card-text">Expiring Soon</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ stats.total_claims }}</h4>
+                            <p class="card-text">Total Claims</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-clipboard-list fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Policies Section -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-file-contract"></i> Your Policies
+                    </h5>
+                    <a href="{{ url_for('policy_list') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if policies %}
+                        {% for policy in policies[:5] %}
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <div>
+                                <strong>{{ policy.policy_number }}</strong><br>
+                                <small class="text-muted">
+                                    {{ policy.policy_type.title() }} - {{ policy.provider_name }}
+                                </small>
+                                {% if policy.is_expiring_soon %}
+                                <br><small class="text-warning">
+                                    <i class="fas fa-exclamation-triangle"></i> Expires {{ policy.expiry_date }}
+                                </small>
+                                {% endif %}
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-{{ 'success' if policy.status == 'active' else 'secondary' }}">
+                                    {{ policy.status.title() }}
+                                </span>
+                                <br><small class="text-muted">${{ "%.2f"|format(policy.premium_amount) }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-file-contract fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No policies found</p>
+                            <a href="{{ url_for('add_policy') }}" class="btn btn-primary">Add Your First Policy</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Claims Section -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-clipboard-list"></i> Recent Claims
+                    </h5>
+                    <a href="{{ url_for('claim_list') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if claims %}
+                        {% for claim in claims %}
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <div>
+                                <strong>{{ claim.claim_number }}</strong><br>
+                                <small class="text-muted">
+                                    {{ claim.policy.policy_number }} - ${{ "%.2f"|format(claim.claim_amount) }}
+                                </small>
+                            </div>
+                            <span class="badge bg-{{ 'warning' if claim.status == 'pending' else 'info' if claim.status == 'processing' else 'success' if claim.status == 'approved' else 'danger' }}">
+                                {{ claim.status.title() }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No claims found</p>
+                            <a href="{{ url_for('add_claim') }}" class="btn btn-success">Submit Your First Claim</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notifications -->
+    {% if notifications %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bell"></i> Notifications
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% for notification in notifications %}
+                    <div class="alert alert-{{ 'warning' if notification.notification_type == 'expiry' else 'info' }} alert-dismissible">
+                        <strong>{{ notification.title }}</strong><br>
+                        {{ notification.message }}
+                        <a href="{{ url_for('mark_notification_read', id=notification.id) }}" class="btn-close"></a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="py-5">
+                <i class="fas fa-server fa-5x text-danger mb-4"></i>
+                <h1 class="display-4">500</h1>
+                <h2 class="mb-4">Internal Server Error</h2>
+                <p class="lead mb-4">
+                    Something went wrong on our end. Please try again later.
+                </p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary me-md-2">
+                        <i class="fas fa-home"></i> Go Home
+                    </a>
+                    <a href="javascript:history.back()" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Go Back
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

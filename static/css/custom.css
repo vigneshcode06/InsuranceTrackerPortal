@@ -1,0 +1,235 @@
+/* Custom CSS for Insurance Tracker Portal */
+
+/* Avatar circles for user lists */
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Timeline styles for claim view */
+.timeline {
+    position: relative;
+    padding: 0;
+    list-style: none;
+}
+
+.timeline:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 20px;
+    width: 2px;
+    background: var(--bs-border-color);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding-left: 50px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: 14px;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bs-body-bg);
+}
+
+.timeline-content {
+    background: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.375rem;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.timeline-title {
+    margin: 0 0 5px 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.timeline-time {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--bs-secondary-color);
+}
+
+/* Hero section styles */
+.hero-section {
+    background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-primary-dark, #0056b3) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.1;
+}
+
+.hero-section > .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Card hover effects */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+}
+
+/* Sticky navigation */
+.navbar.sticky-top {
+    backdrop-filter: blur(10px);
+    background-color: rgba(var(--bs-primary-rgb), 0.95) !important;
+}
+
+/* Form enhancements */
+.form-floating > .form-control:focus,
+.form-floating > .form-control:not(:placeholder-shown) {
+    padding-top: 1.625rem;
+    padding-bottom: 0.625rem;
+}
+
+.form-floating > label {
+    opacity: 0.65;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    opacity: 0.85;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+}
+
+/* Status badges */
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.025em;
+}
+
+/* Table enhancements */
+.table-hover tbody tr:hover {
+    background-color: var(--bs-secondary-bg);
+}
+
+/* Button group spacing */
+.btn-group .btn {
+    border-radius: 0.375rem !important;
+    margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+/* Notification styles */
+.alert-dismissible .btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    padding: 1.25rem 1rem;
+}
+
+/* Loading states */
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* Responsive enhancements */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 3rem 0;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 2px;
+    }
+    
+    .timeline-item {
+        padding-left: 30px;
+    }
+    
+    .timeline:before {
+        left: 10px;
+    }
+    
+    .timeline-marker {
+        left: 4px;
+    }
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .btn,
+    .card-footer,
+    .pagination {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #dee2e6 !important;
+        box-shadow: none !important;
+    }
+    
+    .container {
+        max-width: none !important;
+    }
+}
+
+/* Focus states for accessibility */
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+    box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bs-secondary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bs-border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--bs-secondary-color);
+}

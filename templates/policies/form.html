@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-{{ 'edit' if policy else 'plus' }}"></i>
+                        {{ title }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.policy_number.label(class="form-label") }}
+                                    {{ form.policy_number(class="form-control" + (" is-invalid" if form.policy_number.errors else "")) }}
+                                    {% if form.policy_number.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.policy_number.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.policy_type.label(class="form-label") }}
+                                    {{ form.policy_type(class="form-select" + (" is-invalid" if form.policy_type.errors else "")) }}
+                                    {% if form.policy_type.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.policy_type.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    {{ form.provider_name.label(class="form-label") }}
+                                    {{ form.provider_name(class="form-control" + (" is-invalid" if form.provider_name.errors else "")) }}
+                                    {% if form.provider_name.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.provider_name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    {{ form.provider_contact.label(class="form-label") }}
+                                    {{ form.provider_contact(class="form-control" + (" is-invalid" if form.provider_contact.errors else "")) }}
+                                    {% if form.provider_contact.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.provider_contact.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.premium_amount.label(class="form-label") }}
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        {{ form.premium_amount(class="form-control" + (" is-invalid" if form.premium_amount.errors else "")) }}
+                                        {% if form.premium_amount.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.premium_amount.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.coverage_amount.label(class="form-label") }}
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        {{ form.coverage_amount(class="form-control" + (" is-invalid" if form.coverage_amount.errors else "")) }}
+                                        {% if form.coverage_amount.errors %}
+                                            <div class="invalid-feedback">
+                                                {% for error in form.coverage_amount.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.issue_date.label(class="form-label") }}
+                                    {{ form.issue_date(class="form-control" + (" is-invalid" if form.issue_date.errors else "")) }}
+                                    {% if form.issue_date.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.issue_date.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    {{ form.expiry_date.label(class="form-label") }}
+                                    {{ form.expiry_date(class="form-control" + (" is-invalid" if form.expiry_date.errors else "")) }}
+                                    {% if form.expiry_date.errors %}
+                                        <div class="invalid-feedback">
+                                            {% for error in form.expiry_date.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.description.label(class="form-label") }}
+                            {{ form.description(class="form-control", rows="3") }}
+                            {% if form.description.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.description.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                            <a href="{{ url_for('policy_list') }}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

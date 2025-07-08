@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - {{ super() }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>
+                    <i class="fas fa-tachometer-alt text-primary"></i>
+                    Admin Dashboard
+                </h2>
+                <div>
+                    <a href="{{ url_for('create_backup') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-download"></i> Create Backup
+                    </a>
+                    <form method="POST" action="{{ url_for('restore_backup') }}" class="d-inline">
+                        <button type="submit" class="btn btn-outline-warning" onclick="return confirm('Are you sure? This will overwrite all current data.')">
+                            <i class="fas fa-upload"></i> Restore Backup
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ stats.total_users }}</h4>
+                            <p class="card-text">Total Users</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ stats.total_policies }}</h4>
+                            <p class="card-text">Total Policies</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-file-contract fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ stats.total_claims }}</h4>
+                            <p class="card-text">Total Claims</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-clipboard-list fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">{{ stats.pending_claims }}</h4>
+                            <p class="card-text">Pending Claims</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-clock fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Users</h5>
+                    <a href="{{ url_for('admin_users') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_users %}
+                        {% for user in recent_users %}
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <div>
+                                <strong>{{ user.full_name }}</strong><br>
+                                <small class="text-muted">{{ user.username }} ({{ user.role.title() }})</small>
+                            </div>
+                            <span class="badge bg-{{ 'success' if user.is_active else 'secondary' }}">
+                                {{ 'Active' if user.is_active else 'Inactive' }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-3">No recent users</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Policies</h5>
+                    <a href="{{ url_for('policy_list') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_policies %}
+                        {% for policy in recent_policies %}
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <div>
+                                <strong>{{ policy.policy_number }}</strong><br>
+                                <small class="text-muted">{{ policy.policy_type.title() }} - {{ policy.provider_name }}</small>
+                            </div>
+                            <span class="badge bg-{{ 'success' if policy.status == 'active' else 'secondary' }}">
+                                {{ policy.status.title() }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-3">No recent policies</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Claims</h5>
+                    <a href="{{ url_for('claim_list') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_claims %}
+                        {% for claim in recent_claims %}
+                        <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <div>
+                                <strong>{{ claim.claim_number }}</strong><br>
+                                <small class="text-muted">${{ "%.2f"|format(claim.claim_amount) }}</small>
+                            </div>
+                            <span class="badge bg-{{ 'warning' if claim.status == 'pending' else 'success' if claim.status == 'approved' else 'danger' if claim.status == 'rejected' else 'info' }}">
+                                {{ claim.status.title() }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-3">No recent claims</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
