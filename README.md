@@ -72,9 +72,6 @@ Insurance Tracker Portal is a comprehensive web application built in Flask to he
 - Responsive UI with Bootstrap 5.
 - Secure file upload and management.
 
-## Changelog
-
-- June 20, 2025: Initial setup
 
 ## Getting Started
 
@@ -86,6 +83,4 @@ Insurance Tracker Portal is a comprehensive web application built in Flask to he
    `flask run`
 5. (Optional) Set up PostgreSQL for production.
 
-## License
 
-[Specify your license here]
